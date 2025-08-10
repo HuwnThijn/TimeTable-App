@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timetable_fe/utils/constants.dart';
+import 'package:timetable_fe/utils/auth_manager.dart';
 import 'package:http/http.dart' as http;
 
 class AuthServices {
   static Future<bool> login(String email, String password) async {
-    final url = Uri.parse('$baseUrl/auth/login');
+    final url = Uri.parse('$baseUrl/api/auth/login');
     final res = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -15,9 +15,14 @@ class AuthServices {
 
     if (res.statusCode == 200) {
       final data = jsonDecode(res.body);
-      final prefs = await SharedPreferences.getInstance();
 
-      await prefs.setString('token', data['token']);
+      // Save user data using AuthManager
+      await AuthManager.saveUserData(
+        token: data['token'],
+        email: email,
+        name: data['user']['name'] ?? 'Người dùng',
+      );
+
       return true;
     } else {
       return false;
@@ -29,7 +34,7 @@ class AuthServices {
     String email,
     String password,
   ) async {
-    final url = Uri.parse('$baseUrl/auth/register');
+    final url = Uri.parse('$baseUrl/api/auth/register');
     final res = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -37,10 +42,7 @@ class AuthServices {
     );
 
     if (res.statusCode == 201) {
-      final data = jsonDecode(res.body);
-      final prefs = await SharedPreferences.getInstance();
-
-      await prefs.setString('token', data['token']);
+      // Don't auto-login after register, wait for email verification
       return true;
     } else {
       return false;
@@ -48,7 +50,7 @@ class AuthServices {
   }
 
   static Future<bool> sendVerificationEmail(String email) async {
-    final url = Uri.parse('$baseUrl/auth/send-verification');
+    final url = Uri.parse('$baseUrl/api/auth/send-verification');
     print('Sending verification email to: $email');
     print('URL: $url');
 
@@ -65,7 +67,7 @@ class AuthServices {
   }
 
   static Future<bool> verifyOtp(String email, String otp) async {
-    final url = Uri.parse('$baseUrl/auth/verify-otp');
+    final url = Uri.parse('$baseUrl/api/auth/verify-otp');
     print('Verifying OTP for: $email with OTP: $otp');
     print('URL: $url');
 
@@ -82,7 +84,7 @@ class AuthServices {
   }
 
   static Future<bool> forgetPassword(String email) async {
-    final url = Uri.parse('$baseUrl/auth/forget-password');
+    final url = Uri.parse('$baseUrl/api/auth/forget-password');
     print('Sending forget password request for: $email');
     print('URL: $url');
 
@@ -99,7 +101,7 @@ class AuthServices {
   }
 
   static Future<bool> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.remove('token');
+    await AuthManager.logout();
+    return true;
   }
 }
