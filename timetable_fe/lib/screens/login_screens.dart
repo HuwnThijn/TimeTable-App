@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:timetable_fe/screens/forget_password_screen.dart';
 import 'package:timetable_fe/screens/home_screen.dart';
+import 'package:timetable_fe/screens/otp_verification_screen.dart';
 import 'package:timetable_fe/screens/register_screen.dart';
 import 'package:timetable_fe/services/auth_services.dart';
 

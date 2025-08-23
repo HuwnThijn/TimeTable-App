@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timetable_fe/screens/login_screens.dart';
 import 'package:timetable_fe/screens/add_timetable_screen.dart';
-import 'package:timetable_fe/screens/timetable_detail_screen.dart';
 import 'package:timetable_fe/services/timetable_service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -334,14 +333,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Expanded(
                                   child: InkWell(
                                     onTap: () {
-                                      Navigator.push(
+                                      // TODO: Navigate to detailed timetable view
+                                      ScaffoldMessenger.of(
                                         context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) =>
-                                                  TimetableDetailScreen(
-                                                    timetable: timetable,
-                                                  ),
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Xem chi tiết: ${timetable['title']}',
+                                          ),
                                         ),
                                       );
                                     },

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:timetable_fe/services/auth_services.dart';
 import 'package:timetable_fe/screens/home_screen.dart';
+import 'package:timetable_fe/services/auth_services.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   final String email;
@@ -72,7 +72,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         if (registered && context.mounted) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => HomeScreen()),
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
           );
           ScaffoldMessenger.of(
             context,
